@@ -60,7 +60,7 @@ Function New-FTPSession
 
     Try
     {
-        if($IgnoreCert){Ignore-SelfSignedCerts}
+        if($IgnoreCert){Disable-CertificateValidation}
 	    Switch ($PSCmdlet.ParameterSetName)
 		{
 			'New'
