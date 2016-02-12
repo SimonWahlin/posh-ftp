@@ -1,4 +1,4 @@
-Function New-FTPDir
+Function New-FTPDirectory
 {
     [CmdletBinding()]
     Param
