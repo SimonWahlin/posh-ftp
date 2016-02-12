@@ -11,26 +11,46 @@ Function Get-FTPItem {
     )
     try
     {
-        $ParentPath = Split-Path -Path $Path -Parent
-        if([String]::Empty -eq $ParentPath)
+        if(-Not($PSBoundParameters.ContainsKey('Path')))
         {
-            $ParentPath = '/'
+            $Path = $Session.RequestUri.AbsolutePath
         }
-        $ChildPath = Split-Path -Path $Path -Leaf
-        if([String]::Empty -eq $ChildPath)
+        if($Path -eq '/')
         {
-            $ChildPath = '/'
-        }
-        
-        $RequestItem = Get-FTPChildItem -Session $Session -Path $ParentPath -Detailed | 
-            Where-Object -FilterScript {$_.Name -eq $ChildPath}
-        if($RequestItem)
-        {
-            Write-Output -InputObject $RequestItem
+            if(Test-FTPLocation -Session $Session -Path $Path)
+            {
+                New-Object -TypeName PSObject -Property @{
+                    LastWriteTime = [datetime]::MinValue
+                    PSIsContainer = Test-IsFolder -Session $Session -Path $Path
+                    Length = $null
+                    Name = $Path
+                    FullName = $Path
+                }
+            } 
         }
         else
         {
-            Write-Error -Category ObjectNotFound -TargetObject $Path -Message "Path not found: $Path"
+            $ParentPath = Split-Path -Path $Path -Parent
+            if([String]::Empty -eq $ParentPath)
+            {
+                $ParentPath = '/'
+            }
+            $ChildPath = Split-Path -Path $Path -Leaf
+            if([String]::Empty -eq $ChildPath)
+            {
+                $ChildPath = '/'
+            }
+            
+            $RequestItem = Get-FTPChildItem -Session $Session -Path $ParentPath -Detailed | 
+                Where-Object -FilterScript {$_.Name -eq $ChildPath}
+            if($RequestItem)
+            {
+                Write-Output -InputObject $RequestItem
+            }
+            else
+            {
+                Write-Error -Category ObjectNotFound -TargetObject $Path -Message "Path not found: $Path"
+            }    
         }
     }
     catch
