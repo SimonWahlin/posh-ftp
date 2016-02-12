@@ -29,7 +29,7 @@ Function ConvertFrom-FTPDirectoryDetails {
                         PSIsContainer = if($Matches.type -like '<DIR>'){$true}else{$false}
                         Length = $Matches.Size
                         Name = $Matches.Name
-                        FullName = ('{0}/{1}'-f $Path,$Matches.Name)
+                        FullName = ('{0}/{1}'-f $Path,$Matches.Name) -replace '([\\/])\1+','$1'
                     }
                     break
                 }
@@ -55,7 +55,7 @@ Function ConvertFrom-FTPDirectoryDetails {
                         PSIsContainer = if($Matches.permissions[0] -like 'd'){$true}else{$false}
                         Length = $Matches.Size
                         Name = $Matches.Name
-                        FullName = ('{0}/{1}'-f $Path,$Matches.Name)
+                        FullName = ('{0}/{1}'-f $Path,$Matches.Name) -replace '([\\/])\1+','$1' 
                     }
                 }
                 default {
