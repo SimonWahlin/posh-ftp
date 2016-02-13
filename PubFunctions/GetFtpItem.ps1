@@ -15,7 +15,7 @@ Function Get-FTPItem {
         {
             $Path = $Session.RequestUri.AbsolutePath
         }
-        if($Path -eq '/')
+        if($Path -eq '/' -or $Path -eq '\')
         {
             if(Test-FTPLocation -Session $Session -Path $Path)
             {
