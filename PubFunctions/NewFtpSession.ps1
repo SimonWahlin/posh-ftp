@@ -86,7 +86,7 @@ Function New-FTPSession
                 if($PSBoundParameters.ContainsKey('Path'))
                 {
                     $ServerUri = ($Session.RequestUri.AbsoluteUri -replace ('{0}$' -f $Session.RequestUri.AbsolutePath))
-                    $RequestUri = '{0}/{1}' -f $ServerUri,($Path -replace '^/|/$','')
+                    $RequestUri = '{0}/{1}' -f $ServerUri,($Path -replace '^[/\\]+|[/\\]+$','')
                 }
                 else
                 {
