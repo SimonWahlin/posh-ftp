@@ -25,13 +25,21 @@ Function New-FTPDirectory
     {
         $Params['Path'] = '{0}/{1}' -f $Session.RequestUri.AbsolutePath,($Name -replace '^/|/$')
     }
-    $Request = New-FTPSession @Params
-    Try {
-        $Result=$Request.GetResponse()
+    Write-Verbose -Message ('Creating path: {0}' -f $Params.Path)
+    if(-Not (Test-FTPLocation -Session $Session -Path $Params.Path) )
+    {
+        $Request = New-FTPSession @Params
+        Try {
+            $Result=$Request.GetResponse()
+        }
+        Catch {
+            Write-Verbose -Message 'Failed to create Dir'
+            Return
+        }
+        Write-Verbose -Message $Result.StatusDescription
     }
-    Catch {
-        Write-Verbose -Message 'Failed to create Dir'
-        Return
+    else
+    {
+        Write-Verbose -Message 'Path already exists'
     }
-    Write-Verbose -Message $Result.StatusDescription
 }
